@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KRISHNA MODS — Social Media Downloader</title>
+<meta name="description" content="KRISHNA MODS — Download photos and videos from Instagram, YouTube, Facebook, Pinterest and Snapchat. Free, fast and mobile-friendly." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Ctext x='32' y='44' font-size='30' text-anchor='middle' fill='%238b5cf6' font-family='Arial' font-weight='bold'%3EKM%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --white: #ffffff;
+  --bg: #f7f8fc;
+  --bg-soft: #eef1fb;
+  --purple: #7c3aed;
+  --purple-2: #a855f7;
+  --purple-soft: #ede9fe;
+  --blue-soft: #e0e7ff;
+  --text: #0f1020;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --shadow-sm: 0 4px 14px rgba(15,16,32,0.06);
+  --shadow: 0 10px 30px rgba(15,16,32,0.08);
+  --shadow-lg: 0 24px 60px rgba(124,58,237,0.18);
+  --radius: 22px;
+  --radius-sm: 16px;
+  --radius-xs: 12px;
+}
+html, body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth; overflow-x: hidden;
+}
+body { min-height: 100vh; }
+.container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+
+/* ============ HEADER ============ */
+header.site-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+.header-inner {
+  max-width: 1140px; margin: 0 auto; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px; font-weight: 700; letter-spacing: -0.5px;
+  display: flex; align-items: center; gap: 2px;
+  text-decoration: none;
+}
+.logo .km-black { color: #0f1020; }
+.logo .km-purple { color: var(--purple); }
+.logo-mark {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-2));
+  color: #fff; display: grid; place-items: center;
+  font-weight: 800; font-size: 15px; margin-right: 10px;
+  box-shadow: 0 6px 18px rgba(124,58,237,0.35);
+  font-family: 'Space Grotesk', sans-serif;
+}
+.nav-links { display: flex; align-items: center; gap: 4px; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500;
+  padding: 10px 14px; border-radius: 10px; transition: all 0.2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--bg); }
+.hamburger {
+  display: none; width: 40px; height: 40px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--white); cursor: pointer;
+  color: var(--text); font-size: 18px;
+}
+.mobile-menu {
+  display: none; flex-direction: column; padding: 12px 20px 16px;
+  border-top: 1px solid var(--border); background: var(--white);
+}
+.mobile-menu a {
+  color: var(--text); text-decoration: none; padding: 12px 8px;
+  font-size: 15px; font-weight: 500; border-radius: 10px;
+}
+.mobile-menu a:hover { background: var(--bg); }
+.mobile-menu.open { display: flex; }
+
+/* ============ HERO ============ */
+.hero {
+  background: linear-gradient(180deg, #ede9fe 0%, #e0e7ff 60%, #f7f8fc 100%);
+  padding: 70px 0 60px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(168,85,247,0.18), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(59,130,246,0.16), transparent 45%);
+  pointer-events: none;
+}
+.hero .container { position: relative; z-index: 2; }
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 700; line-height: 1.08; letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+.hero h1 .grad {
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple-2) 60%, #6366f1 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p.sub {
+  font-size: clamp(15px, 2vw, 18px); color: #4b5060;
+  max-width: 560px; margin: 0 auto 40px; line-height: 1.6;
+}
+
+/* URL card */
+.dl-card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 24px 22px; box-shadow: var(--shadow-lg);
+  max-width: 760px; margin: 0 auto;
+  border: 1px solid rgba(124,58,237,0.08);
+}
+.url-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.url-row input {
+  flex: 1; min-width: 220px;
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: 16px 18px; font-size: 15px;
+  font-family: inherit; color: var(--text);
+  outline: none; transition: all 0.25s;
+}
+.url-row input::placeholder { color: #9aa0ae; }
+.url-row input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 4px rgba(124,58,237,0.15);
+  background: var(--white);
+}
+.dl-btn {
+  border: none; cursor: pointer; font-family: inherit;
+  background: linear-gradient(135deg, var(--purple), var(--purple-2));
+  color: #fff; font-weight: 700; font-size: 15px;
+  padding: 16px 28px; border-radius: var(--radius-xs);
+  box-shadow: 0 10px 24px rgba(124,58,237,0.35);
+  transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px;
+  white-space: nowrap;
+}
+.dl-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(124,58,237,0.5); }
+.dl-btn:active:not(:disabled) { transform: translateY(0); }
+.dl-btn:disabled { opacity: 0.75; cursor: not-allowed; }
+
+.spinner {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+  display: none;
+}
+.dl-btn.loading .spinner { display: inline-block; }
+.dl-btn.loading .btn-icon { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.platform-chips {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  margin-top: 22px;
+}
+.p-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 14px; border-radius: 100px;
+  background: var(--bg); border: 1.5px solid transparent;
+  color: #4b5060; font-weight: 600; font-size: 13.5px;
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.p-chip svg { width: 16px; height: 16px; }
+.p-chip:hover { background: var(--purple-soft); color: var(--purple); }
+.p-chip.active {
+  background: var(--white); border-color: var(--purple);
+  color: var(--purple); box-shadow: 0 4px 14px rgba(124,58,237,0.15);
+}
+
+/* ============ PLATFORM CARDS ============ */
+section { padding: 60px 0; }
+.section-head { text-align: center; margin-bottom: 40px; }
+.section-head h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 4vw, 38px); font-weight: 700;
+  letter-spacing: -1px; margin-bottom: 10px;
+}
+.section-head p { color: var(--muted); font-size: 15px; max-width: 560px; margin: 0 auto; }
+
+.platform-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+}
+.p-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 26px 22px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+  display: flex; flex-direction: column;
+}
+.p-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); border-color: rgba(124,58,237,0.25); }
+.p-logo {
+  width: 54px; height: 54px; border-radius: 15px;
+  display: grid; place-items: center; margin-bottom: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.p-logo svg { width: 28px; height: 28px; }
+.p-name { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.p-desc { font-size: 13.5px; color: var(--muted); line-height: 1.55; margin-bottom: 18px; flex: 1; }
+.p-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--bg); color: var(--text); border: 1px solid var(--border);
+  padding: 11px 16px; border-radius: var(--radius-xs);
+  font-size: 13.5px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; font-family: inherit;
+}
+.p-btn:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
+
+.p-logo.instagram { background: linear-gradient(45deg, #feda75, #fa7e1e 25%, #d62976 55%, #962fbf 80%, #4f5bd5); }
+.p-logo.youtube { background: linear-gradient(135deg, #ff0000, #c4302b); }
+.p-logo.facebook { background: linear-gradient(135deg, #1877f2, #0a58ca); }
+.p-logo.pinterest { background: linear-gradient(135deg, #e60023, #ad081b); }
+.p-logo.snapchat { background: linear-gradient(135deg, #fffc00, #f7f300); }
+.p-logo.snapchat svg path { fill: #000 !important; }
+.p-logo.twitter { background: linear-gradient(135deg, #000000, #1a1a1a); }
+
+/* ============ RESULT ============ */
+#resultSection { display: none; padding: 20px 0 60px; }
+#resultSection.show { display: block; }
+.result-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+  box-shadow: var(--shadow); max-width: 760px; margin: 0 auto;
+  animation: fadeUp 0.4s ease;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.result-top { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.thumb {
+  width: 120px; height: 120px; border-radius: var(--radius-xs);
+  background: linear-gradient(135deg, var(--purple-soft), var(--blue-soft));
+  display: grid; place-items: center; color: var(--purple);
+  font-size: 30px; flex-shrink: 0; overflow: hidden;
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.result-info { flex: 1; min-width: 200px; }
+.result-info h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; word-break: break-word; }
+.result-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.meta-tag {
+  display: inline-block; font-size: 12px; font-weight: 600;
+  padding: 5px 10px; border-radius: 100px;
+  background: var(--purple-soft); color: var(--purple);
+  text-transform: capitalize;
+}
+.result-url {
+  font-size: 12.5px; color: var(--muted); word-break: break-all;
+  background: var(--bg); padding: 10px 12px; border-radius: 10px;
+  font-family: ui-monospace, monospace;
+  max-height: 60px; overflow-y: auto;
+}
+.result-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+
+.dl-links { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.dl-link {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius-xs); padding: 12px 14px;
+  transition: all 0.2s; text-decoration: none; color: inherit;
+}
+.dl-link:hover { border-color: var(--purple); background: var(--purple-soft); }
+.dl-link .dl-label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 600; color: var(--text);
+}
+.dl-link .dl-label .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  box-shadow: 0 0 8px rgba(34,197,94,0.5);
+  flex-shrink: 0;
+}
+.dl-link .dl-go {
+  font-size: 12.5px; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  padding: 7px 14px; border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(34,197,94,0.3);
+  white-space: nowrap;
+}
+.btn-outline {
+  background: var(--white); color: var(--text);
+  border: 1.5px solid var(--border); cursor: pointer;
+  padding: 12px 20px; border-radius: var(--radius-xs);
+  font-size: 14px; font-weight: 600; font-family: inherit;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+.btn-outline:hover { background: var(--bg); border-color: var(--purple); color: var(--purple); }
+.btn-green {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #fff; border: none; cursor: pointer;
+  padding: 13px 22px; border-radius: var(--radius-xs);
+  font-size: 14px; font-weight: 700; font-family: inherit;
+  display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 20px rgba(34,197,94,0.35);
+  transition: all 0.25s; text-decoration: none;
+}
+.btn-green:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(34,197,94,0.5); }
+
+.error-msg {
+  background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;
+  border-radius: var(--radius-xs); padding: 14px 16px;
+  font-size: 14px; font-weight: 500; line-height: 1.55;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.error-msg svg { flex-shrink: 0; margin-top: 2px; }
+
+.info-msg {
+  background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af;
+  border-radius: var(--radius-xs); padding: 14px 16px;
+  font-size: 14px; font-weight: 500; line-height: 1.55;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+
+/* ============ FAQ ============ */
+.faq-list { max-width: 780px; margin: 0 auto; }
+.faq-item {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); margin-bottom: 10px;
+  overflow: hidden; transition: all 0.3s;
+}
+.faq-item.open { border-color: var(--purple); box-shadow: var(--shadow-sm); }
+.faq-q {
+  padding: 20px 22px; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; font-size: 15.5px; font-weight: 600;
+}
+.faq-q::after {
+  content: "+"; font-size: 24px; color: var(--purple);
+  transition: transform 0.3s; font-weight: 300; line-height: 1;
+}
+.faq-item.open .faq-q::after { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0; overflow: hidden; transition: max-height 0.35s ease;
+  padding: 0 22px; color: var(--muted); font-size: 14.5px; line-height: 1.7;
+}
+.faq-item.open .faq-a { max-height: 400px; padding: 0 22px 20px; }
+
+/* ============ FOOTER ============ */
+footer {
+  background: var(--white); border-top: 1px solid var(--border);
+  padding: 40px 0 30px; margin-top: 40px;
+}
+.footer-inner {
+  max-width: 1140px; margin: 0 auto; padding: 0 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 18px;
+}
+.footer-brand { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; }
+.footer-brand .km-black { color: #0f1020; }
+.footer-brand .km-purple { color: var(--purple); }
+.footer-links { display: flex; gap: 6px; flex-wrap: wrap; }
+.footer-links a {
+  color: var(--muted); text-decoration: none; font-size: 14px;
+  padding: 8px 12px; border-radius: 8px; transition: all 0.2s;
+}
+.footer-links a:hover { color: var(--purple); background: var(--purple-soft); }
+.footer-copy {
+  max-width: 1140px; margin: 20px auto 0; padding: 20px;
+  border-top: 1px solid var(--border); text-align: center;
+  color: var(--muted); font-size: 13px;
+}
+
+/* ============ TOAST ============ */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: #0f1020; color: #fff;
+  padding: 13px 22px; border-radius: 100px;
+  font-size: 14px; font-weight: 600;
+  box-shadow: 0 16px 40px rgba(15,16,32,0.35);
+  opacity: 0; pointer-events: none; transition: all 0.3s;
+  z-index: 1000; max-width: 90vw; text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: #dc2626; }
+.toast.success { background: #16a34a; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 820px) {
+  .nav-links { display: none; }
+  .hamburger { display: grid; place-items: center; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+@media (max-width: 520px) {
+  .hero { padding: 50px 0 40px; }
+  .dl-card { padding: 20px 16px; }
+  .url-row { flex-direction: column; }
+  .dl-btn { width: 100%; justify-content: center; }
+  .platform-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .p-card { padding: 18px 14px; }
+  .p-logo { width: 46px; height: 46px; }
+  .p-logo svg { width: 24px; height: 24px; }
+  .p-name { font-size: 15px; }
+  .p-desc { font-size: 12.5px; }
+  .section-head h2 { font-size: 24px; }
+  section { padding: 40px 0; }
+  .result-top { flex-direction: column; }
+  .thumb { width: 100%; height: 180px; }
+  .result-card { padding: 18px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#home" class="logo">
+      <span class="logo-mark">KM</span>
+      <span class="km-black">KRISHNA</span>
+      <span class="km-purple">MODS</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#tools">Tools</a>
+      <a href="#faq">FAQ</a>
+      <a href="#">Privacy</a>
+    </nav>
+    <button class="hamburger" onclick="toggleMobile()" aria-label="Menu">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home" onclick="toggleMobile()">Home</a>
+    <a href="#tools" onclick="toggleMobile()">Tools</a>
+    <a href="#faq" onclick="toggleMobile()">FAQ</a>
+    <a href="#" onclick="toggleMobile()">Privacy</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <div class="container">
+    <h1>Social Media <span class="grad">Downloader</span></h1>
+    <p class="sub">Download photos and videos from your favorite platforms — fast, free and mobile-friendly.</p>
+
+    <div class="dl-card">
+      <div class="url-row">
+        <input type="url" id="urlInput" placeholder="Paste your Instagram URL" />
+        <button class="dl-btn" id="downloadBtn" onclick="handleDownload()">
+          <span class="spinner"></span>
+          <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          <span id="btnText">Download</span>
+        </button>
+      </div>
+
+      <div class="platform-chips" id="platformChips">
+        <button class="p-chip active" data-platform="instagram" data-placeholder="Paste your Instagram URL">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+          Instagram
+        </button>
+        <button class="p-chip" data-platform="youtube" data-placeholder="Paste your YouTube URL">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3V9z" fill="currentColor"/></svg>
+          YouTube
+        </button>
+        <button class="p-chip" data-platform="facebook" data-placeholder="Paste your Facebook URL">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.5 9.9v-7H8v-3h2.5V9.5c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.7-1.6 1.5V12h3l-.5 3h-2.5v7A10 10 0 0 0 22 12z"/></svg>
+          Facebook
+        </button>
+        <button class="p-chip" data-platform="pinterest" data-placeholder="Paste your Pinterest URL">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 4.2 2.6 7.8 6.3 9.3-.1-.8-.2-2 0-2.9l1.1-4.8s-.3-.6-.3-1.4c0-1.3.8-2.3 1.7-2.3.8 0 1.2.6 1.2 1.3 0 .8-.5 2-.8 3.2-.2 1 .5 1.8 1.5 1.8 1.8 0 3.2-1.9 3.2-4.7 0-2.5-1.8-4.2-4.3-4.2-2.9 0-4.6 2.2-4.6 4.4 0 .9.3 1.8.8 2.3.1.1.1.2.1.3l-.3 1.1c0 .2-.2.2-.4.1-1.1-.5-1.8-2.2-1.8-3.5 0-2.9 2.1-5.5 6-5.5 3.1 0 5.6 2.2 5.6 5.2 0 3.1-2 5.7-4.7 5.7-1 0-1.9-.5-2.2-1.1l-.6 2.3c-.2.9-.8 1.9-1.2 2.6.9.3 1.9.4 2.9.4 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+          Pinterest
+        </button>
+        <button class="p-chip" data-platform="snapchat" data-placeholder="Paste your Snapchat URL">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.7 0 4.8 2 4.9 4.7 0 .7 0 1.4-.1 2 .5.2 1.2.2 1.6-.1.5-.3 1.2-.1 1.3.5.1.5-.3 1.1-.9 1.4-.4.2-.8.4-1.1.7-.2.3-.1.7.1 1 .4.6 1 1.2 1.7 1.5.5.2 1 .4 1.5.5.4.1.6.5.5.9-.2.7-1.5 1.1-2.4 1.3-.3.1-.4.3-.4.6-.1.4-.2.8-.6.9-.4.1-.9-.1-1.4-.2-.7-.1-1.5 0-2.2.3-1 .5-2 1.3-3.1 1.3s-2.1-.8-3.1-1.3c-.7-.3-1.5-.4-2.2-.3-.5.1-1 .3-1.4.2-.4-.1-.5-.5-.6-.9 0-.3-.1-.5-.4-.6-.9-.2-2.2-.6-2.4-1.3-.1-.4.1-.8.5-.9.5-.1 1-.3 1.5-.5.7-.3 1.3-.9 1.7-1.5.2-.3.3-.7.1-1-.3-.3-.7-.5-1.1-.7-.6-.3-1-.9-.9-1.4.1-.6.8-.8 1.3-.5.4.3 1.1.3 1.6.1-.1-.6-.1-1.3-.1-2C7.2 4 9.3 2 12 2z"/></svg>
+          Snapchat
+        </button>
+        <button class="p-chip" data-platform="twitter" data-placeholder="Paste your X / Twitter URL">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-6.8 7.8L23 22h-6.3l-4.9-6.4L6.2 22H3l7.3-8.3L1 2h6.4l4.4 5.8L18.9 2zm-1.1 18h1.7L7.3 3.8H5.5L17.8 20z"/></svg>
+          X / Twitter
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESULT ============ -->
+<section id="resultSection">
+  <div class="container">
+    <div class="result-card" id="resultCard"></div>
+  </div>
+</section>
+
+<!-- ============ PLATFORM CARDS ============ -->
+<section id="tools">
+  <div class="container">
+    <div class="section-head">
+      <h2>Supported Platforms</h2>
+      <p>Choose a platform to download from. All tools are free and work directly in your browser.</p>
+    </div>
+
+    <div class="platform-grid">
+      <div class="p-card">
+        <div class="p-logo instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="#fff"/></svg>
+        </div>
+        <div class="p-name">Instagram</div>
+        <div class="p-desc">Download photos, reels and videos from Instagram posts.</div>
+        <button class="p-btn" onclick="selectPlatform('instagram')">Use Tool →</button>
+      </div>
+
+      <div class="p-card">
+        <div class="p-logo youtube">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3V9z" fill="#fff"/></svg>
+        </div>
+        <div class="p-name">YouTube</div>
+        <div class="p-desc">Grab videos and thumbnails from YouTube in HD quality.</div>
+        <button class="p-btn" onclick="selectPlatform('youtube')">Use Tool →</button>
+      </div>
+
+      <div class="p-card">
+        <div class="p-logo facebook">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M22 12a10 10 0 1 0-11.5 9.9v-7H8v-3h2.5V9.5c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.7-1.6 1.5V12h3l-.5 3h-2.5v7A10 10 0 0 0 22 12z"/></svg>
+        </div>
+        <div class="p-name">Facebook</div>
+        <div class="p-desc">Download Facebook videos, reels and photo posts easily.</div>
+        <button class="p-btn" onclick="selectPlatform('facebook')">Use Tool →</button>
+      </div>
+
+      <div class="p-card">
+        <div class="p-logo pinterest">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.5 2 2 6.5 2 12c0 4.2 2.6 7.8 6.3 9.3-.1-.8-.2-2 0-2.9l1.1-4.8s-.3-.6-.3-1.4c0-1.3.8-2.3 1.7-2.3.8 0 1.2.6 1.2 1.3 0 .8-.5 2-.8 3.2-.2 1 .5 1.8 1.5 1.8 1.8 0 3.2-1.9 3.2-4.7 0-2.5-1.8-4.2-4.3-4.2-2.9 0-4.6 2.2-4.6 4.4 0 .9.3 1.8.8 2.3.1.1.1.2.1.3l-.3 1.1c0 .2-.2.2-.4.1-1.1-.5-1.8-2.2-1.8-3.5 0-2.9 2.1-5.5 6-5.5 3.1 0 5.6 2.2 5.6 5.2 0 3.1-2 5.7-4.7 5.7-1 0-1.9-.5-2.2-1.1l-.6 2.3c-.2.9-.8 1.9-1.2 2.6.9.3 1.9.4 2.9.4 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+        </div>
+        <div class="p-name">Pinterest</div>
+        <div class="p-desc">Save Pinterest images and videos in original quality.</div>
+        <button class="p-btn" onclick="selectPlatform('pinterest')">Use Tool →</button>
+      </div>
+
+      <div class="p-card">
+        <div class="p-logo snapchat">
+          <svg viewBox="0 0 24 24" fill="#000"><path d="M12 2c2.7 0 4.8 2 4.9 4.7 0 .7 0 1.4-.1 2 .5.2 1.2.2 1.6-.1.5-.3 1.2-.1 1.3.5.1.5-.3 1.1-.9 1.4-.4.2-.8.4-1.1.7-.2.3-.1.7.1 1 .4.6 1 1.2 1.7 1.5.5.2 1 .4 1.5.5.4.1.6.5.5.9-.2.7-1.5 1.1-2.4 1.3-.3.1-.4.3-.4.6-.1.4-.2.8-.6.9-.4.1-.9-.1-1.4-.2-.7-.1-1.5 0-2.2.3-1 .5-2 1.3-3.1 1.3s-2.1-.8-3.1-1.3c-.7-.3-1.5-.4-2.2-.3-.5.1-1 .3-1.4.2-.4-.1-.5-.5-.6-.9 0-.3-.1-.5-.4-.6-.9-.2-2.2-.6-2.4-1.3-.1-.4.1-.8.5-.9.5-.1 1-.3 1.5-.5.7-.3 1.3-.9 1.7-1.5.2-.3.3-.7.1-1-.3-.3-.7-.5-1.1-.7-.6-.3-1-.9-.9-1.4.1-.6.8-.8 1.3-.5.4.3 1.1.3 1.6.1-.1-.6-.1-1.3-.1-2C7.2 4 9.3 2 12 2z"/></svg>
+        </div>
+        <div class="p-name">Snapchat</div>
+        <div class="p-desc">Download Snapchat spotlight and story videos quickly.</div>
+        <button class="p-btn" onclick="selectPlatform('snapchat')">Use Tool →</button>
+      </div>
+
+      <div class="p-card">
+        <div class="p-logo twitter">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M18.9 2H22l-6.8 7.8L23 22h-6.3l-4.9-6.4L6.2 22H3l7.3-8.3L1 2h6.4l4.4 5.8L18.9 2zm-1.1 18h1.7L7.3 3.8H5.5L17.8 20z"/></svg>
+        </div>
+        <div class="p-name">X / Twitter</div>
+        <div class="p-desc">Save videos and images from X (Twitter) posts and threads.</div>
+        <button class="p-btn" onclick="selectPlatform('twitter')">Use Tool →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-head">
+      <h2>Frequently Asked Questions</h2>
+      <p>Everything you need to know about KRISHNA MODS downloader.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">How does the downloader work?</div>
+        <div class="faq-a">Paste the link of a public post from any supported platform into the input box, choose the platform, and click Download. The tool fetches the media and provides you with a download option.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Which platforms are supported?</div>
+        <div class="faq-a">KRISHNA MODS supports Instagram, YouTube, Facebook, Pinterest and Snapchat. X (Twitter) support will be added once an official endpoint is available.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Is it free?</div>
+        <div class="faq-a">Yes, KRISHNA MODS is completely free. No sign-up, no login, no hidden fees. Just paste a link and download.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Does it work on mobile?</div>
+        <div class="faq-a">Yes. KRISHNA MODS is fully mobile responsive and works smoothly on Android, iOS, tablets and desktop browsers.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="km-black">KRISHNA</span>
+      <span class="km-purple">MODS</span>
+    </div>
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#tools">Tools</a>
+      <a href="#faq">FAQ</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2026 KRISHNA MODS — All rights reserved.</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   API CONFIG — Replace with your custom domain later.
+   Example: const API_BASE = "https://api.MYDOMAIN.com";
+============================================================ */
+const API_BASE = "";
+
+/* ============ STATE ============ */
+const state = {
+  currentPlatform: 'instagram',
+  currentUrl: '',
+  busy: false
+};
+
+/* ============ API ENDPOINTS ============ */
+const API_ENDPOINTS = {
+  instagram: "/Instagram?video=",
+  youtube:   "/youtube?video=",
+  facebook:  "/facebook?video=",
+  pinterest: "/Pinterest?video=",
+  snapchat:  "/snap?video="
+  /* twitter: not supported */
+};
+
+/* ============ PLATFORM INFO ============ */
+const PLATFORM_INFO = {
+  instagram: { name: 'Instagram' },
+  youtube:   { name: 'YouTube' },
+  facebook:  { name: 'Facebook' },
+  pinterest: { name: 'Pinterest' },
+  snapchat:  { name: 'Snapchat' },
+  twitter:   { name: 'X / Twitter' }
+};
+
+/* ============ TOAST ============ */
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.className = 'toast'; }, 2800);
+}
+
+/* ============ UTIL ============ */
+function toggleMobile() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function isValidUrl(str) {
+  try { const u = new URL(str); return u.protocol === 'http:' || u.protocol === 'https:'; }
+  catch { return false; }
+}
+function escapeHTML(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+function detectPlatform(url) {
+  const u = String(url).toLowerCase();
+  if (u.includes('instagram.com') || u.includes('instagr.am')) return 'instagram';
+  if (u.includes('youtube.com') || u.includes('youtu.be')) return 'youtube';
+  if (u.includes('facebook.com') || u.includes('fb.watch') || u.includes('fb.com')) return 'facebook';
+  if (u.includes('pinterest.com') || u.includes('pin.it')) return 'pinterest';
+  if (u.includes('snapchat.com')) return 'snapchat';
+  if (u.includes('twitter.com') || u.includes('x.com')) return 'twitter';
+  return null;
+}
+
+/* ============ PLATFORM CHIP SELECT ============ */
+document.getElementById('platformChips').addEventListener('click', (e) => {
+  const btn = e.target.closest('.p-chip');
+  if (!btn) return;
+  document.querySelectorAll('.p-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  state.currentPlatform = btn.dataset.platform;
+  document.getElementById('urlInput').placeholder = btn.dataset.placeholder || 'Paste your URL';
+  document.getElementById('urlInput').focus();
+});
+
+/* ============ SELECT FROM CARD ============ */
+function selectPlatform(platform) {
+  const btn = document.querySelector(`.p-chip[data-platform="${platform}"]`);
+  if (btn) btn.click();
+  document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => document.getElementById('urlInput').focus(), 400);
+}
+
+/* ============ FAQ ============ */
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+/* ============ LOADING ============ */
+function setLoading(on) {
+  const btn = document.getElementById('downloadBtn');
+  const txt = document.getElementById('btnText');
+  if (on) {
+    btn.classList.add('loading');
+    btn.disabled = true;
+    txt.textContent = 'Processing...';
+  } else {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    txt.textContent = 'Download';
+  }
+}
+
+/* ============ EXTRACT MEDIA LINKS ============ */
+function collectDownloadLinks(obj) {
+  const links = [];
+  const seen = new Set();
+  const isUrl = (v) => typeof v === 'string' && /^https?:\/\//i.test(v) && v.length > 8;
+
+  const add = (label, url) => {
+    if (!isUrl(url) || seen.has(url)) return;
+    seen.add(url);
+    links.push({ label: label || 'Download', url });
+  };
+
+  const walk = (node, label, depth) => {
+    if (depth > 6 || node == null) return;
+    if (typeof node === 'string') {
+      if (isUrl(node)) add(label, node);
+      return;
+    }
+    if (Array.isArray(node)) {
+      node.forEach((item, i) => walk(item, `${label} #${i + 1}`, depth + 1));
+      return;
+    }
+    if (typeof node === 'object') {
+      const singleKeys = [
+        ['download_url', 'Download'],
+        ['downloadUrl', 'Download'],
+        ['download', 'Download'],
+        ['video', 'Video'],
+        ['video_url', 'Video'],
+        ['videoUrl', 'Video'],
+        ['hd', 'HD Video'],
+        ['sd', 'SD Video'],
+        ['photo', 'Photo'],
+        ['image', 'Image'],
+        ['image_url', 'Image'],
+        ['thumbnail', 'Thumbnail'],
+        ['thumb', 'Thumbnail'],
+        ['cover', 'Cover'],
+        ['url', 'Media']
+      ];
+      singleKeys.forEach(([k, lbl]) => {
+        const v = node[k];
+        if (typeof v === 'string') add(lbl, v);
+        else if (Array.isArray(v)) v.forEach((it, i) => walk(it, `${lbl} #${i + 1}`, depth + 1));
+        else if (v && typeof v === 'object') walk(v, lbl, depth + 1);
+      });
+      Object.keys(node).forEach(k => {
+        if (singleKeys.some(([sk]) => sk === k)) return;
+        const v = node[k];
+        if (v && typeof v === 'object') walk(v, k, depth + 1);
+      });
+    }
+  };
+
+  walk(obj, 'Download', 0);
+  return links;
+}
+
+/* ============ FIND THUMBNAIL ============ */
+function findThumbnail(obj) {
+  if (!obj || typeof obj !== 'object') return '';
+  const keys = ['thumbnail', 'thumb', 'cover', 'thumbnail_url', 'thumb_url', 'image', 'image_url', 'photo', 'display_url'];
+  for (const k of keys) {
+    if (typeof obj[k] === 'string' && /^https?:\/\//i.test(obj[k])) return obj[k];
+    if (Array.isArray(obj[k]) && typeof obj[k][0] === 'string' && /^https?:\/\//i.test(obj[k][0])) return obj[k][0];
+  }
+  for (const k of Object.keys(obj)) {
+    if (obj[k] && typeof obj[k] === 'object') {
+      const t = findThumbnail(obj[k]);
+      if (t) return t;
+    }
+  }
+  return '';
+}
+
+/* ============ FIND MEDIA TYPE ============ */
+function findMediaType(obj) {
+  if (!obj || typeof obj !== 'object') return '';
+  const keys = ['media_type', 'mediaType', 'type', 'kind'];
+  for (const k of keys) {
+    if (typeof obj[k] === 'string' && obj[k].length < 20) return obj[k];
+  }
+  for (const k of Object.keys(obj)) {
+    if (obj[k] && typeof obj[k] === 'object') {
+      const t = findMediaType(obj[k]);
+      if (t) return t;
+    }
+  }
+  return '';
+}
+
+/* ============ FIND TITLE ============ */
+function findTitle(obj) {
+  if (!obj || typeof obj !== 'object') return '';
+  const keys = ['title', 'caption', 'name', 'description'];
+  for (const k of keys) {
+    if (typeof obj[k] === 'string' && obj[k].length > 0 && obj[k].length < 300) return obj[k];
+  }
+  for (const k of Object.keys(obj)) {
+    if (obj[k] && typeof obj[k] === 'object') {
+      const t = findTitle(obj[k]);
+      if (t) return t;
+    }
+  }
+  return '';
+}
+
+/* ============ RENDER ERROR ============ */
+function renderError(msg) {
+  const card = document.getElementById('resultCard');
+  card.innerHTML = `
+    <div class="error-msg">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+      </svg>
+      <div>${escapeHTML(msg)}</div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-outline" onclick="closeResult()">Close</button>
+    </div>`;
+  const section = document.getElementById('resultSection');
+  section.classList.add('show');
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ============ RENDER RESULT ============ */
+function renderResult(data, url, platform) {
+  const card = document.getElementById('resultCard');
+
+  // Handle array response (Instagram carousel)
+  let payload = data;
+  if (Array.isArray(data)) {
+    if (data.length === 0) { renderError('API ने कोई download link नहीं दिया।'); return; }
+    payload = data.length === 1 ? data[0] : { items: data };
+  }
+
+  const links = collectDownloadLinks(payload);
+  const thumb = findThumbnail(payload);
+  const mediaType = findMediaType(payload) || 'media';
+  const title = findTitle(payload) || `${PLATFORM_INFO[platform].name} media`;
+
+  let thumbHTML;
+  if (thumb) {
+    thumbHTML = `<img src="${escapeHTML(thumb)}" alt="Thumbnail" loading="lazy" onerror="this.parentElement.innerHTML='<svg width=&quot;40&quot; height=&quot;40&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;%237c3aed&quot; stroke-width=&quot;1.8&quot;><rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;18&quot; height=&quot;18&quot; rx=&quot;3&quot;/><circle cx=&quot;9&quot; cy=&quot;9&quot; r=&quot;2&quot;/><path d=&quot;m21 15-4-4L5 21&quot;/></svg>'">`;
+  } else {
+    thumbHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4-4L5 21"/></svg>`;
+  }
+
+  let metaHTML = `<span class="meta-tag">${escapeHTML(PLATFORM_INFO[platform].name)}</span>`;
+  if (mediaType && mediaType !== 'media') metaHTML += `<span class="meta-tag">${escapeHTML(mediaType)}</span>`;
+  metaHTML += `<span class="meta-tag">${links.length} link${links.length === 1 ? '' : 's'}</span>`;
+
+  let linksHTML = '';
+  if (links.length) {
+    linksHTML = `
+      <div style="margin-top:16px;">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Available Downloads</div>
+        <div class="dl-links">
+          ${links.map(l => `
+            <a class="dl-link" href="${escapeHTML(l.url)}" target="_blank" rel="noopener noreferrer">
+              <span class="dl-label"><span class="dot"></span>${escapeHTML(l.label)}</span>
+              <span class="dl-go">Download</span>
+            </a>`).join('')}
+        </div>
+      </div>`;
+  } else {
+    linksHTML = `
+      <div class="info-msg" style="margin-top:16px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        <div>API ने कोई download link नहीं दिया।</div>
+      </div>`;
+  }
+
+  card.innerHTML = `
+    <div class="result-top">
+      <div class="thumb">${thumbHTML}</div>
+      <div class="result-info">
+        <h3>${escapeHTML(title.substring(0, 100))}</h3>
+        <div class="result-meta">${metaHTML}</div>
+        <div class="result-url">${escapeHTML(url)}</div>
+      </div>
+    </div>
+    ${linksHTML}
+    <div class="result-actions">
+      <button class="btn-outline" onclick="copyUrl()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        Copy Link
+      </button>
+      <button class="btn-outline" onclick="closeResult()">Close</button>
+    </div>`;
+
+  const section = document.getElementById('resultSection');
+  section.classList.add('show');
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeResult() {
+  document.getElementById('resultSection').classList.remove('show');
+  document.getElementById('resultCard').innerHTML = '';
+}
+
+async function copyUrl() {
+  try {
+    await navigator.clipboard.writeText(state.currentUrl);
+    toast('Link copied ✓', 'success');
+  } catch {
+    toast('Copy failed', 'error');
+  }
+}
+
+/* ============ MAIN DOWNLOAD HANDLER ============ */
+async function handleDownload() {
+  if (state.busy) return;
+
+  const input = document.getElementById('urlInput');
+  const url = input.value.trim();
+
+  if (!url) { toast('Please paste a URL first', 'error'); input.focus(); return; }
+  if (!isValidUrl(url)) { toast('Please enter a valid URL', 'error'); return; }
+
+  // Detect platform from URL, fallback to manual selection
+  const detected = detectPlatform(url);
+  const platform = detected || state.currentPlatform;
+
+  if (detected && detected !== state.currentPlatform) {
+    const btn = document.querySelector(`.p-chip[data-platform="${detected}"]`);
+    if (btn) {
+      document.querySelectorAll('.p-chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      state.currentPlatform = detected;
+      input.placeholder = btn.dataset.placeholder || input.placeholder;
+    }
+  }
+
+  // X/Twitter not supported
+  if (platform === 'twitter') {
+    renderError('X/Twitter API अभी available नहीं है।');
+    toast('X/Twitter API not available', 'error');
+    return;
+  }
+
+  const endpoint = API_ENDPOINTS[platform];
+  if (!endpoint) {
+    renderError('इस platform के लिए API available नहीं है।');
+    return;
+  }
+
+  state.currentUrl = url;
+  state.busy = true;
+  setLoading(true);
+  closeResult();
+
+  const apiUrl = API_BASE + endpoint + encodeURIComponent(url);
+  console.log('[KRISHNA MODS] API call:', apiUrl);
+
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!res.ok) throw new Error(`API error: HTTP ${res.status}`);
+
+    let data;
+    const text = await res.text();
+    try { data = JSON.parse(text); }
+    catch { throw new Error('API ने invalid response दिया।'); }
+
+    console.log('[KRISHNA MODS] API response:', data);
+
+    // Check for explicit error field
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      if (data.status === 'error' || data.error) {
+        const msg = data.message || data.error || 'API ने कोई download link नहीं दिया।';
+        renderError(msg);
+        toast('API error', 'error');
+        return;
+      }
+    }
+
+    renderResult(data, url, platform);
+    toast('Result loaded ✓', 'success');
+
+  } catch (err) {
+    console.error('[KRISHNA MODS]', err);
+    const msg = err && err.message ? err.message : 'Request failed.';
+    renderError(`Download failed. ${msg}`);
+    toast('Download failed', 'error');
+  } finally {
+    state.busy = false;
+    setLoading(false);
+  }
+}
+
+/* ============ ENTER KEY ============ */
+document.getElementById('urlInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); handleDownload(); }
+});
+
+/* ============ INIT ============ */
+console.log('%cKRISHNA MODS ready ✓', 'color:#7c3aed;font-weight:bold;font-size:14px');
+</script>
+</body>
+</html>
