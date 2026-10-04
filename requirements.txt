@@ -1,6 +1,6 @@
-Flask
-flask-cors
-requests
-beautifulsoup4
-yt-dlp
-gunicorn
+Flask>=3.0.0
+flask-cors>=4.0.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+yt-dlp>=2024.10.22
+gunicorn>=21.2.0
