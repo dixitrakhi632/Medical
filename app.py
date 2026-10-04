@@ -236,33 +236,90 @@ def get_pinterest_download_links(url):
 
 
 # ============================================================
-# YOUTUBE
+# YOUTUBE  (UPDATED — MULTI-CLIENT FALLBACK)
 # ============================================================
 def download_youtube(url):
-    try:
-        if not url:
-            return {"status": "error", "message": "YouTube URL is required"}
-        ydl_opts = {
-            "quiet": True,
-            "no_warnings": True,
-            "skip_download": True,
-            "noplaylist": True,
-            "format": "best/bestvideo+bestaudio/best",
-        }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
+    """
+    Fetch YouTube media using multiple yt-dlp strategies.
+    YouTube keeps changing things, so we try several player clients
+    and format selection strategies.
+    """
+    if not url:
+        return {"status": "error", "message": "YouTube URL is required"}
 
-        formats = []
-        seen_urls = set()
+    # Strategies — try each until one works
+    client_attempts = [
+        {"youtube": {"player_client": ["android", "web"]}},
+        {"youtube": {"player_client": ["ios"]}},
+        {"youtube": {"player_client": ["web"]}},
+        {"youtube": {"player_client": ["tv_embedded"]}},
+        {"youtube": {"player_client": ["mweb"]}},
+        {"youtube": {"player_client": ["android"]}},
+        {},
+    ]
+
+    last_error = None
+    info = None
+
+    for attempt in client_attempts:
+        try:
+            ydl_opts = {
+                "quiet": True,
+                "no_warnings": True,
+                "skip_download": True,
+                "noplaylist": True,
+                "format": "best/bestvideo+bestaudio/best",
+                "extractor_args": attempt,
+                "user_agent": ua(),
+                "nocheckcertificate": True,
+                "geo_bypass": True,
+                "age_limit": 99,
+                "socket_timeout": 20,
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+            if info:
+                break
+        except Exception as e:
+            last_error = e
+            continue
+
+    if not info:
+        return {
+            "status": "error",
+            "message": f"YouTube request failed: {str(last_error) if last_error else 'All player clients failed'}",
+        }
+
+    # Collect usable direct URLs
+    formats = []
+    seen_urls = set()
+
+    for f in info.get("formats", []):
+        direct_url = f.get("url")
+        if not direct_url or direct_url in seen_urls:
+            continue
+        if f.get("vcodec") == "none" and f.get("acodec") == "none":
+            continue
+        # skip manifest / hls
+        if "manifest.googlevideo" in direct_url or "hls_playlist" in direct_url:
+            continue
+        if f.get("ext") not in ("mp4", "m4a", "webm", "3gp"):
+            continue
+
+        seen_urls.add(direct_url)
+        formats.append({
+            "quality": f.get("format_note") or f.get("resolution") or "Original",
+            "ext": f.get("ext") or "mp4",
+            "url": direct_url,
+        })
+
+    # If we filtered everything out, keep the raw list (fallback)
+    if not formats:
         for f in info.get("formats", []):
             direct_url = f.get("url")
             if not direct_url or direct_url in seen_urls:
                 continue
             if f.get("vcodec") == "none" and f.get("acodec") == "none":
-                continue
-            if "manifest.googlevideo" in direct_url or "hls_playlist" in direct_url:
-                continue
-            if f.get("ext") not in ("mp4", "m4a", "webm"):
                 continue
             seen_urls.add(direct_url)
             formats.append({
@@ -271,17 +328,15 @@ def download_youtube(url):
                 "url": direct_url,
             })
 
-        return {
-            "status": "success",
-            "title": info.get("title", "Unknown Title"),
-            "author": info.get("uploader", "Unknown"),
-            "duration": info.get("duration"),
-            "thumbnail": info.get("thumbnail", ""),
-            "video": formats,
-            "url": url,
-        }
-    except Exception as e:
-        return {"status": "error", "message": f"YouTube request failed: {str(e)}"}
+    return {
+        "status": "success",
+        "title": info.get("title", "Unknown Title"),
+        "author": info.get("uploader", "Unknown"),
+        "duration": info.get("duration"),
+        "thumbnail": info.get("thumbnail", ""),
+        "video": formats,
+        "url": url,
+    }
 
 
 # ============================================================
